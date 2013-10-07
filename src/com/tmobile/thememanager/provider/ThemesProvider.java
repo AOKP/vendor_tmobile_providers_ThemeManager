@@ -56,9 +56,11 @@ import android.util.TypedValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -295,8 +297,15 @@ public class ThemesProvider extends ContentProvider {
             }
 
             /* List all currently installed theme packages. */
-            List<PackageInfo> themePackages = getContext().getPackageManager()
-                    .getInstalledThemePackages();
+            List<PackageInfo> themePackages = new ArrayList<PackageInfo>();
+            List<PackageInfo> installedPackagesList = getContext().getPackageManager().getInstalledPackages(0);
+            Iterator<PackageInfo> i = installedPackagesList.iterator();
+            while (i.hasNext()) {
+                final PackageInfo pi = i.next();
+                if (pi != null && pi.isThemeApk) {
+                    themePackages.add(pi);
+                }
+            }
 
             /*
              * Get a sorted cursor of all currently known themes. We'll walk
